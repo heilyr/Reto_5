@@ -1,0 +1,245 @@
+/*
+ * Pueda usar esta plantilla para la carga del reto a iMaster
+ * Copie las clases de los paquetes Modelo, Vista, Controlador y Util
+ * No incluya los import de los archivos .java solo las clases
+ */
+// Importaciones necesarias en iMaster
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+// Util (No modificar)
+class JDBCUtilities {
+    private static final String DATABASE_LOCATION = "ProyectosConstruccion.db";
+
+    public static Connection getConnection() throws SQLException {
+        String url = "jdbc:sqlite:"+DATABASE_LOCATION;
+
+        return DriverManager.getConnection(url);
+    }
+}
+
+// Remplace en adelante por las clases de sus archivos .java
+
+// Vista
+class VistaRequerimientosReto4 {
+    public static final ControladorRequerimientos controlador = new ControladorRequerimientos();
+
+    public static void requerimiento1() {
+
+        System.out.println("Conocer el id y la constructora de los proyectos de tipo 1 y acabados en 'Si'");
+         //Encabezado del resultado
+         System.out.println("ID_Compra Constructora");
+        try {
+            ArrayList<Requerimiento_1> resultado_requerimiento1 = controlador.consultarRequerimiento1();
+            resultado_requerimiento1.forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println("Se ha producido el siguiente error:" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void requerimiento2() {
+        System.out.println("Conocer el id y la constructora de los proyectos que tengan en su tipo el estrato 2");
+         //Encabezado del resultado
+         System.out.println("ID_Compra Constructora");
+        try {
+            ArrayList<Requerimiento_2> resultado_requerimiento2 = controlador.consultarRequerimiento2();
+            resultado_requerimiento2.forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println("Se ha producido el siguiente error:" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void requerimiento3() {
+        System.out.println("");
+         //Encabezado del resultado
+         System.out.println("Id_Proyecto fecha");
+        try {
+            ArrayList<Requerimiento_3> resultado_requerimiento3 = controlador.consultarRequerimiento3();
+            resultado_requerimiento3.forEach(System.out::println);
+        } catch (Exception e) {
+            System.out.println("Se ha producido el siguiente error:" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+
+// Controlador
+class ControladorRequerimientos {
+    private final Requerimiento_1Dao requerimiento_1Dao;
+    private final Requerimiento_2Dao requerimiento_2Dao;
+    private final Requerimiento_3Dao requerimiento_3Dao;
+ 
+
+    public ControladorRequerimientos() {
+        this.requerimiento_1Dao = new Requerimiento_1Dao();
+        this.requerimiento_2Dao = new Requerimiento_2Dao();
+        this.requerimiento_3Dao = new Requerimiento_3Dao();
+
+    }
+
+    public ArrayList<Requerimiento_1> consultarRequerimiento1() throws SQLException {
+        return this.requerimiento_1Dao.requerimiento1();
+
+    }
+
+    public ArrayList<Requerimiento_2> consultarRequerimiento2() throws SQLException {
+        return this.requerimiento_2Dao.requerimiento2();
+
+    }
+
+    public ArrayList<Requerimiento_3> consultarRequerimiento3() throws SQLException {
+        return this.requerimiento_3Dao.requerimiento3();
+
+    }
+}
+
+// Modelo
+// VO
+class Requerimiento_1 { 
+    
+    private Integer ID_Proyecto;
+    private String constructora;
+    
+    public void Requerimiento_1Vo() {
+    }
+    public Integer getID_Proyecto() {
+        return ID_Proyecto;
+    }
+    public void setID_Proyecto(Integer iD_Proyecto) {
+        ID_Proyecto = iD_Proyecto;
+    }
+    public String getConstructora() {
+        return constructora;
+    }
+    public void setConstructora(String constructora) {
+        this.constructora = constructora;
+    }
+    @Override
+    public String toString() {
+        return ID_Proyecto + " " + constructora;
+    }
+    }
+
+class Requerimiento_2 {
+    private Integer ID_Proyecto;
+    private String constructora;
+    
+
+    public void Requerimiento_2Vo() {
+    }
+    public Integer getID_Proyecto() {
+        return ID_Proyecto;
+    }
+    public void setID_Proyecto(Integer iD_Proyecto) {
+        ID_Proyecto = iD_Proyecto;
+    }
+    public String getConstructora() {
+        return constructora;
+    }
+    public void setConstructora(String constructora) {
+        this.constructora = constructora;
+    }
+    @Override
+    public String toString() {
+        return ID_Proyecto + " " + constructora;
+    }
+}
+
+class Requerimiento_3 {
+     private Integer ID_Proyecto;
+    private String Fecha_Inicio;
+
+    public void Requerimiento_3Vo() {
+    }
+    public Integer getID_Proyecto() {
+        return ID_Proyecto;
+    }
+    public void setID_Proyecto(Integer iD_Proyecto) {
+        ID_Proyecto = iD_Proyecto;
+    }
+    public String getFecha_Inicio() {
+        return Fecha_Inicio;
+    }
+    public void setFecha_Inicio(String fecha_Inicio) {
+        Fecha_Inicio = fecha_Inicio;
+    }
+    @Override
+    public String toString() {
+        return ID_Proyecto + " " + Fecha_Inicio;
+    }
+}
+
+// DAO
+class Requerimiento_1Dao {public ArrayList<Requerimiento_1> requerimiento1() throws SQLException {
+       
+        // Su código
+        ArrayList<Requerimiento_1> respuesta = new ArrayList<Requerimiento_1>();
+        Connection connection = JDBCUtilities.getConnection();
+
+        String sql = "SELECT p.ID_Proyecto, p.Constructora FROM Proyecto p WHERE p.ID_Tipo = '1' AND p.Acabados = 'Si'";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Requerimiento_1 requerimiento1 = new Requerimiento_1();
+                requerimiento1.setID_Proyecto(rs.getInt("ID_Proyecto"));
+                requerimiento1.setConstructora(rs.getString("constructora"));
+                respuesta.add(requerimiento1);
+            }
+        }
+
+       
+        // Retornar la colección de vo's
+        return respuesta;
+    }
+    }
+
+class Requerimiento_2Dao {
+    public ArrayList<Requerimiento_2> requerimiento2() throws SQLException {
+          
+            // Su código
+            ArrayList<Requerimiento_2> respuesta = new ArrayList<Requerimiento_2>();
+            Connection connection = JDBCUtilities.getConnection();
+
+        String sql = "SELECT p.ID_Proyecto, p.Constructora FROM Proyecto p WHERE p.ID_Tipo = '3'";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Requerimiento_2 requerimiento2 = new Requerimiento_2();
+                requerimiento2.setID_Proyecto(rs.getInt("ID_Proyecto"));
+                requerimiento2.setConstructora(rs.getString("constructora"));
+                respuesta.add(requerimiento2);
+
+        }
+    }
+
+        // Retornar la colección de vo's
+           
+        return respuesta;
+
+    }
+}
+
+class Requerimiento_3Dao {
+    public ArrayList<Requerimiento_3> requerimiento3() throws SQLException {
+        
+        ArrayList<Requerimiento_3> respuesta = new ArrayList<Requerimiento_3>();
+        Connection connection = JDBCUtilities.getConnection();
+                String sql = "SELECT p.ID_Proyecto, p.Fecha_Inicio FROM Proyecto p WHERE p.Banco_Vinculado like 'B%' AND p.Constructora like 'H%'";
+           try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Requerimiento_3 requerimiento3 = new Requerimiento_3();
+                requerimiento3.setID_Proyecto(rs.getInt("ID_Proyecto"));
+                requerimiento3.setFecha_Inicio(rs.getString("Fecha_Inicio"));
+                respuesta.add(requerimiento3);
+
+        }
+    }
+
+        return respuesta;
+
+    }
+}
